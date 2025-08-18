@@ -62,8 +62,8 @@ use super::{
 	AccountId, Aura, Balance, Balances, Block, BlockNumber, CollatorSelection, ConsensusHook, Hash,
 	MessageQueue, Nonce, PalletInfo, ParachainSystem, Runtime, RuntimeCall, RuntimeEvent,
 	RuntimeFreezeReason, RuntimeHoldReason, RuntimeOrigin, RuntimeTask, Session, SessionKeys,
-	System, WeightToFee, XcmpQueue, AVERAGE_ON_INITIALIZE_RATIO, EXISTENTIAL_DEPOSIT, HOURS,
-	MAXIMUM_BLOCK_WEIGHT, MICRO_UNIT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, VERSION,
+	System, Timestamp, WeightToFee, XcmpQueue, AVERAGE_ON_INITIALIZE_RATIO, EXISTENTIAL_DEPOSIT, HOURS,
+	MAXIMUM_BLOCK_WEIGHT, MICRO_UNIT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, UNIT, VERSION,
 };
 use xcm_config::{RelayLocation, XcmOriginToTransactDispatchOrigin};
 
@@ -320,4 +320,35 @@ impl pallet_collator_selection::Config for Runtime {
 impl pallet_parachain_template::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = pallet_parachain_template::weights::SubstrateWeight<Runtime>;
+}
+
+parameter_types! {
+	pub const EscrowPalletId: PalletId = PalletId(*b"py/escro");
+	pub const MinimumEscrowAmount: Balance = 10 * UNIT;
+	pub const MaximumEscrowAmount: Balance = 1_000_000 * UNIT;
+	pub const MinimumDeadline: u64 = 3600;  // 1 hour in seconds
+	pub const MaximumDeadline: u64 = 7_776_000;  // 90 days in seconds
+	pub const MaxDescriptionLength: u32 = 500;
+	pub const MaxDisputeReasonLength: u32 = 1000;
+	pub const MaxActiveEscrowsPerUser: u32 = 100;
+	pub const PlatformFeePercent: sp_runtime::Percent = sp_runtime::Percent::from_percent(1);
+	pub const DefaultArbitratorFeePercent: sp_runtime::Percent = sp_runtime::Percent::from_percent(2);
+}
+
+/// Configure the escrow pallet
+impl pallet_escrow::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type Time = Timestamp;
+	type PalletId = EscrowPalletId;
+	type MinimumEscrowAmount = MinimumEscrowAmount;
+	type MaximumEscrowAmount = MaximumEscrowAmount;
+	type MinimumDeadline = MinimumDeadline;
+	type MaximumDeadline = MaximumDeadline;
+	type MaxDescriptionLength = MaxDescriptionLength;
+	type MaxDisputeReasonLength = MaxDisputeReasonLength;
+	type MaxActiveEscrowsPerUser = MaxActiveEscrowsPerUser;
+	type PlatformFeePercent = PlatformFeePercent;
+	type DefaultArbitratorFeePercent = DefaultArbitratorFeePercent;
+	type WeightInfo = pallet_escrow::weights::SubstrateWeight<Runtime>;
 }

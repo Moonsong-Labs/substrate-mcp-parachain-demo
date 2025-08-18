@@ -1,8 +1,8 @@
 use crate as pallet_escrow;
 use frame::deps::{
     frame_support::{
-        parameter_types,
-        traits::{ConstU16, ConstU32, ConstU64, ConstU128},
+        derive_impl, parameter_types,
+        traits::{ConstU16, ConstU32, ConstU64, ConstU128, VariantCountOf},
         PalletId,
     },
     frame_system,
@@ -25,6 +25,12 @@ frame::deps::frame_support::construct_runtime!(
     }
 );
 
+parameter_types! {
+    pub const BlockHashCount: u64 = 250;
+    pub const SS58Prefix: u16 = 42;
+}
+
+#[derive_impl(frame_system::config_preludes::TestDefaultConfig)]
 impl frame_system::Config for Test {
     type BaseCallFilter = frame::deps::frame_support::traits::Everything;
     type BlockWeights = ();
@@ -51,19 +57,25 @@ impl frame_system::Config for Test {
     type MaxConsumers = ConstU32<16>;
 }
 
+parameter_types! {
+    pub const ExistentialDeposit: u128 = 1;
+}
+
 impl pallet_balances::Config for Test {
     type Balance = u128;
-    type DustRemoval = ();
     type RuntimeEvent = RuntimeEvent;
-    type ExistentialDeposit = ConstU128<1>;
+    type DustRemoval = ();
+    type ExistentialDeposit = ExistentialDeposit;
     type AccountStore = System;
     type WeightInfo = ();
-    type MaxLocks = ();
+    type MaxLocks = ConstU32<50>;
     type MaxReserves = ConstU32<50>;
     type ReserveIdentifier = [u8; 8];
     type RuntimeHoldReason = ();
+    type RuntimeFreezeReason = ();
     type FreezeIdentifier = ();
-    type MaxFreezes = ();
+    type MaxFreezes = ConstU32<0>;
+    type DoneSlashHandler = ();
 }
 
 impl pallet_timestamp::Config for Test {
@@ -104,7 +116,7 @@ impl pallet_escrow::Config for Test {
 }
 
 pub fn new_test_ext() -> sp_io::TestExternalities {
-    let mut t = frame_system::GenesisConfig::<Test>::default()
+    let mut t = frame::deps::frame_system::GenesisConfig::<Test>::default()
         .build_storage()
         .unwrap();
     
@@ -116,6 +128,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
             (4, 100_000),
             (5, 100_000),
         ],
+        ..Default::default()
     }
     .assimilate_storage(&mut t)
     .unwrap();

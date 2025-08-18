@@ -10027,6 +10027,7 @@ dependencies = [
  "docify",
  "hex-literal",
  "log",
+ "pallet-escrow",
  "pallet-parachain-template",
  "parity-scale-codec",
  "polkadot-sdk 2503.0.1",

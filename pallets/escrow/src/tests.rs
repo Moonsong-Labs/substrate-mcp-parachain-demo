@@ -1,5 +1,4 @@
 use crate::{mock::*, Error, Event, Pallet as Escrow};
-use mock::{Test, RuntimeOrigin, System, Balances, Timestamp};
 use frame::deps::{
     frame_support::{assert_noop, assert_ok},
     sp_core::H256,
@@ -419,7 +418,7 @@ fn set_arbitrator_fee_works() {
 }
 
 fn get_last_escrow_id() -> H256 {
-    use frame::deps::sp_runtime::traits::Hash;
+    use frame::deps::{sp_runtime::traits::Hash, frame_system};
     let count = Escrow::<Test>::escrow_count();
     <Test as frame_system::Config>::Hashing::hash_of(&(1u64, 2u64, count))
 }
