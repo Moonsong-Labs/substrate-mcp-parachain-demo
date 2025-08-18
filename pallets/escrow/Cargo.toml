@@ -1,0 +1,42 @@
+[package]
+name = "pallet-escrow"
+version = "0.1.0"
+authors = ["Your Name"]
+edition = "2021"
+license = "MIT-0"
+homepage = "https://substrate.io"
+repository = "https://github.com/your-org/your-repo"
+description = "Escrow pallet for secure peer-to-peer transactions"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { features = ["derive"], workspace = true }
+scale-info = { features = ["derive"], workspace = true }
+frame = { workspace = true, features = ["experimental", "runtime"], default-features = false }
+
+[dev-dependencies]
+sp-core = { workspace = true }
+sp-io = { workspace = true }
+pallet-balances = { workspace = true }
+pallet-timestamp = { workspace = true }
+
+[features]
+default = ["std"]
+std = [
+    "codec/std",
+    "scale-info/std",
+    "frame/std",
+    "pallet-balances/std",
+    "pallet-timestamp/std",
+    "sp-core/std",
+    "sp-io/std",
+]
+runtime-benchmarks = [
+    "frame/runtime-benchmarks",
+]
+try-runtime = [
+    "frame/try-runtime",
+]
