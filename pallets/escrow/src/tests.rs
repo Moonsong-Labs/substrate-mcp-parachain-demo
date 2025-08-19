@@ -1,6 +1,5 @@
-use crate::{mock::*, Error, Event, EscrowStatus};
+use crate::{mock::*, Error, Event};
 use frame_support::{assert_noop, assert_ok};
-use sp_runtime::Permill;
 
 #[test]
 fn create_escrow_works() {
@@ -119,7 +118,7 @@ fn create_escrow_fails_with_invalid_deadline() {
                 RuntimeOrigin::signed(buyer),
                 seller,
                 amount,
-                System::block_number() + 100, // Less than MinDeadline
+                System::block_number() + 5, // Less than MinDeadline (which is 10)
                 description.clone()
             ),
             Error::<Test>::DeadlineOutOfBounds
@@ -131,7 +130,7 @@ fn create_escrow_fails_with_invalid_deadline() {
                 RuntimeOrigin::signed(buyer),
                 seller,
                 amount,
-                System::block_number() + 2_000_000, // More than MaxDeadline
+                System::block_number() + 20_000, // More than MaxDeadline (which is 10_000)
                 description
             ),
             Error::<Test>::DeadlineOutOfBounds

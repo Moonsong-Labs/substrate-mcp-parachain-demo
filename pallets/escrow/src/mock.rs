@@ -1,7 +1,8 @@
 use crate as pallet_escrow;
 use frame_support::{
 	derive_impl, parameter_types,
-	traits::{ConstU128, ConstU32, ConstU64},
+	traits::{ConstU128, Hooks},
+	PalletId,
 };
 use sp_runtime::BuildStorage;
 
@@ -29,29 +30,40 @@ impl pallet_balances::Config for Test {
 }
 
 parameter_types! {
-	pub const MinEscrowAmount: u128 = 10;
-	pub const MaxEscrowAmount: u128 = 1_000_000;
-	pub const MaxDescriptionLength: u32 = 500;
-	pub const MinDeadlineBlocks: u64 = 10;
-	pub const MaxDeadlineBlocks: u64 = 10_000;
-	pub const MaxActiveEscrowsPerUser: u32 = 100;
+	pub const EscrowPalletId: PalletId = PalletId(*b"py/escro");
+	pub const MinEscrow: u128 = 10;
+	pub const MaxEscrow: u128 = 1_000_000;
+	pub const MaxDescriptionLen: u32 = 500;
+	pub const MinDeadline: u64 = 10;
+	pub const MaxDeadline: u64 = 10_000;
+	pub const MaxActiveEscrows: u32 = 100;
 }
 
 impl pallet_escrow::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
-	type MinEscrowAmount = MinEscrowAmount;
-	type MaxEscrowAmount = MaxEscrowAmount;
-	type MaxDescriptionLength = MaxDescriptionLength;
-	type MinDeadlineBlocks = MinDeadlineBlocks;
-	type MaxDeadlineBlocks = MaxDeadlineBlocks;
-	type MaxActiveEscrowsPerUser = MaxActiveEscrowsPerUser;
+	type PalletId = EscrowPalletId;
+	type MinEscrow = MinEscrow;
+	type MaxEscrow = MaxEscrow;
+	type MaxDescriptionLen = MaxDescriptionLen;
+	type MinDeadline = MinDeadline;
+	type MaxDeadline = MaxDeadline;
+	type MaxActiveEscrows = MaxActiveEscrows;
+	type GovernanceOrigin = frame_system::EnsureRoot<u64>;
 	type WeightInfo = ();
 }
 
 pub const ALICE: u64 = 1;
 pub const BOB: u64 = 2;
 pub const CHARLIE: u64 = 3;
+
+pub fn run_to_block(n: u64) {
+	while System::block_number() < n {
+		System::on_finalize(System::block_number());
+		System::set_block_number(System::block_number() + 1);
+		System::on_initialize(System::block_number());
+	}
+}
 
 pub fn new_test_ext() -> sp_io::TestExternalities {
 	let mut storage = frame_system::GenesisConfig::<Test>::default().build_storage().unwrap();

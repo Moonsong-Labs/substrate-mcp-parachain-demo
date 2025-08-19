@@ -1,23 +1,4 @@
-╭───────────────────────────────────────────────────────────╮
-│ ✻ Welcome to Claude Code!                                 │
-│                                                           │
-│   /help for help, /status for your current setup          │
-│                                                           │
-│   cwd: /workspace/pallet-scaffold-example/pallets/escrow  │
-│                                                           │
-│   ─────────────────────────────────────────────────────── │
-│                                                           │
-│   Overrides (via env):                                    │
-│                                                           │
-│   • API timeout: 180000ms                                 │
-│   • API Base URL: https://claude-substrate-mcp.msldev.io  │
-╰───────────────────────────────────────────────────────────╯
-
- Tips for getting started:
-
- 1. Run /init to create a CLAUDE.md file with instructions for Claude
- 2. Use Claude to help with file analysis, editing, bash commands and git
- 3. Be as specific as you would with another engineer for the best results
+===== INVOKING THE PROMPT =====
 
 > /substrate:scaffold_pallet "Use spec from PALLET_SPEC.md"
 
@@ -91,6 +72,8 @@
 
 ● List(/workspace/pallet-scaffold-example)
   ⎿  Listed 51 paths (ctrl+r to expand)
+
+===== CREATING THE PALLET =====
 
 ● Now, let me create the escrow pallet in the pallets directory:
 
@@ -2216,6 +2199,7 @@
        404    }
        405   \ No newline at end of file
 
+==== RUN TESTS AND ITERATE ====
 ● Now let's run the tests to ensure everything works:
 
 ● Bash(cargo test -p pallet-escrow)
@@ -3628,6 +3612,8 @@
      ☒ Add fee management functionality
      ☒ Add helper functions and utilities
      ☒ Create comprehensive tests
+
+===== ADD BENCHMARKS =====
 
 ● Now I'll create the benchmarking module:
 
