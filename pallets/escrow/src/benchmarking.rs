@@ -4,10 +4,9 @@ use super::*;
 
 #[allow(unused)]
 use crate::Pallet as Escrow;
-use frame_benchmarking::{benchmarks, whitelisted_caller, account};
-use frame_system::RawOrigin;
-use frame_support::traits::Currency;
-use sp_std::vec;
+use frame::{benchmarking::{benchmarks, whitelisted_caller, account}, traits::Currency};
+use frame::deps::frame_system::RawOrigin;
+use alloc::vec;
 
 const SEED: u32 = 0;
 

@@ -26,8 +26,9 @@
 #![allow(unused_imports)]
 #![allow(clippy::unnecessary_cast)]
 
-use frame_support::{traits::Get, weights::{Weight, constants::RocksDbWeight}};
-use sp_std::marker::PhantomData;
+use frame::prelude::*;
+use frame::runtime::prelude::weights::constants::RocksDbWeight;
+use core::marker::PhantomData;
 
 /// Weight functions needed for pallet_escrow.
 pub trait WeightInfo {
@@ -40,7 +41,7 @@ pub trait WeightInfo {
 
 /// Weights for pallet_escrow using the Substrate node and recommended hardware.
 pub struct SubstrateWeight<T>(PhantomData<T>);
-impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
+impl<T: frame::deps::frame_system::Config> WeightInfo for SubstrateWeight<T> {
     /// Storage: Escrow NextEscrowId (r:1 w:1)
     /// Storage: Escrow ActiveByUser (r:1 w:1)
     /// Storage: Balances Account (r:2 w:2)

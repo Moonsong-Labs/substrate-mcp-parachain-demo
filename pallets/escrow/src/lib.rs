@@ -1,14 +1,13 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use frame_support::{
-    dispatch::DispatchResult,
-    pallet_prelude::*,
-    traits::{Currency, ExistenceRequirement::AllowDeath, Get, ReservableCurrency, ConstU16},
-    PalletId,
+use frame::{
+    prelude::*,
+    traits::{Currency, ExistenceRequirement::AllowDeath, ReservableCurrency},
 };
-use frame_system::pallet_prelude::*;
-use sp_runtime::traits::{AccountIdConversion, Saturating, Zero};
-use sp_std::vec::Vec;
+use frame::arithmetic::traits::{Saturating, Zero};
+use frame::deps::sp_runtime::traits::AccountIdConversion;
+extern crate alloc;
+use alloc::vec::Vec;
 
 pub use pallet::*;
 
@@ -24,17 +23,18 @@ mod benchmarking;
 pub mod weights;
 pub use weights::*;
 
-#[frame_support::pallet]
+#[frame::pallet]
 pub mod pallet {
     use super::*;
+    use frame::traits::ConstU16;
 
-    pub type BalanceOf<T> = <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+    pub type BalanceOf<T> = <<T as Config>::Currency as Currency<<T as frame::deps::frame_system::Config>::AccountId>>::Balance;
     pub type EscrowId = u64;
 
     #[pallet::config]
-    pub trait Config: frame_system::Config {
+    pub trait Config: frame::deps::frame_system::Config {
         /// The overarching event type.
-        type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
+        type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame::deps::frame_system::Config>::RuntimeEvent>;
 
         /// The currency trait.
         type Currency: ReservableCurrency<Self::AccountId>;
@@ -230,7 +230,7 @@ pub mod pallet {
                 Error::<T>::DescriptionTooLong
             );
             
-            let now = <frame_system::Pallet<T>>::block_number();
+            let now = <frame::deps::frame_system::Pallet<T>>::block_number();
             let min_deadline = now.saturating_add(T::MinDeadline::get());
             let max_deadline = now.saturating_add(T::MaxDeadline::get());
             ensure!(
@@ -382,7 +382,7 @@ pub mod pallet {
             ensure!(escrow.buyer == who, Error::<T>::NotBuyer);
             ensure!(escrow.status == EscrowStatus::Pending, Error::<T>::EscrowNotPending);
             
-            let now = <frame_system::Pallet<T>>::block_number();
+            let now = <frame::deps::frame_system::Pallet<T>>::block_number();
             ensure!(now > escrow.deadline, Error::<T>::DeadlineNotPassed);
             
             // Full refund, no fee

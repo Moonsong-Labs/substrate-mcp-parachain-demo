@@ -4970,6 +4970,8 @@
      ## Features
      … +100 lines (ctrl+r to expand)
 
+  === END
+
 ● Perfect! I've successfully scaffolded a complete Substrate escrow pallet based on your
   specification. Here's what was created:
 

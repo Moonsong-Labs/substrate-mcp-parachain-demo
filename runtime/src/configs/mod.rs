@@ -62,8 +62,8 @@ use super::{
 	AccountId, Aura, Balance, Balances, Block, BlockNumber, CollatorSelection, ConsensusHook, Hash,
 	MessageQueue, Nonce, PalletInfo, ParachainSystem, Runtime, RuntimeCall, RuntimeEvent,
 	RuntimeFreezeReason, RuntimeHoldReason, RuntimeOrigin, RuntimeTask, Session, SessionKeys,
-	System, WeightToFee, XcmpQueue, AVERAGE_ON_INITIALIZE_RATIO, EXISTENTIAL_DEPOSIT, HOURS,
-	MAXIMUM_BLOCK_WEIGHT, MICRO_UNIT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, VERSION,
+	System, WeightToFee, XcmpQueue, AVERAGE_ON_INITIALIZE_RATIO, DAYS, EXISTENTIAL_DEPOSIT, HOURS,
+	MAXIMUM_BLOCK_WEIGHT, MICRO_UNIT, MILLI_UNIT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, UNIT, VERSION,
 };
 use xcm_config::{RelayLocation, XcmOriginToTransactDispatchOrigin};
 
@@ -320,4 +320,29 @@ impl pallet_collator_selection::Config for Runtime {
 impl pallet_parachain_template::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = pallet_parachain_template::weights::SubstrateWeight<Runtime>;
+}
+
+parameter_types! {
+	pub const EscrowPalletId: PalletId = PalletId(*b"py/escro");
+	pub const MinEscrow: Balance = 100 * MILLI_UNIT;  // 0.1 UNIT minimum
+	pub const MaxEscrow: Balance = 1_000_000 * UNIT;  // 1M UNIT maximum
+	pub const MaxActiveEscrows: u32 = 100;
+	pub const MinDeadline: BlockNumber = HOURS;  // 1 hour minimum
+	pub const MaxDeadline: BlockNumber = 90 * DAYS;  // 90 days maximum
+	pub const MaxDescriptionLen: u32 = 500;
+}
+
+/// Configure the escrow pallet
+impl pallet_escrow::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type PalletId = EscrowPalletId;
+	type MinEscrow = MinEscrow;
+	type MaxEscrow = MaxEscrow;
+	type MaxActiveEscrows = MaxActiveEscrows;
+	type MinDeadline = MinDeadline;
+	type MaxDeadline = MaxDeadline;
+	type MaxDescriptionLen = MaxDescriptionLen;
+	type GovernanceOrigin = EnsureRoot<AccountId>;
+	type WeightInfo = pallet_escrow::weights::SubstrateWeight<Runtime>;
 }
