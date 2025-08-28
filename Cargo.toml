@@ -6,9 +6,10 @@ repository = "https://github.com/paritytech/polkadot-sdk-parachain-template.git"
 edition = "2021"
 
 [workspace]
-default-members = ["pallets/template", "runtime"]
+default-members = ["pallets/template", "pallets/escrow", "runtime"]
 members = [
     "node",
+    "pallets/escrow",
     "pallets/template",
     "runtime",
 ]
@@ -16,6 +17,7 @@ resolver = "2"
 
 [workspace.dependencies]
 parachain-template-runtime = { path = "./runtime", default-features = false }
+pallet-escrow = { path = "./pallets/escrow", default-features = false }
 pallet-parachain-template = { path = "./pallets/template", default-features = false }
 clap = { version = "4.5.13" }
 color-print = { version = "0.3.4" }

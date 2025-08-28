@@ -63,7 +63,7 @@ use super::{
 	MessageQueue, Nonce, PalletInfo, ParachainSystem, Runtime, RuntimeCall, RuntimeEvent,
 	RuntimeFreezeReason, RuntimeHoldReason, RuntimeOrigin, RuntimeTask, Session, SessionKeys,
 	System, WeightToFee, XcmpQueue, AVERAGE_ON_INITIALIZE_RATIO, EXISTENTIAL_DEPOSIT, HOURS,
-	MAXIMUM_BLOCK_WEIGHT, MICRO_UNIT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, VERSION,
+	MAXIMUM_BLOCK_WEIGHT, MICRO_UNIT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, UNIT, VERSION,
 };
 use xcm_config::{RelayLocation, XcmOriginToTransactDispatchOrigin};
 
@@ -320,4 +320,30 @@ impl pallet_collator_selection::Config for Runtime {
 impl pallet_parachain_template::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = pallet_parachain_template::weights::SubstrateWeight<Runtime>;
+}
+
+parameter_types! {
+	pub const EscrowPalletId: PalletId = PalletId(*b"escrow  ");
+	pub const MinimumEscrowAmount: Balance = 10 * EXISTENTIAL_DEPOSIT;
+	pub const MaximumEscrowAmount: Balance = 1_000_000 * UNIT;
+	pub const MinimumDeadline: BlockNumber = 600; // ~1 hour at 6s blocks
+	pub const MaximumDeadline: BlockNumber = 1_296_000; // ~90 days at 6s blocks
+	pub const MaxDescriptionLength: u32 = 500;
+	pub const MaxActiveEscrowsPerUser: u32 = 100;
+	pub const PlatformFeePercent: u32 = 100; // 1% = 100 basis points
+}
+
+/// Configure the escrow pallet.
+impl pallet_escrow::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type PalletId = EscrowPalletId;
+	type MinimumEscrowAmount = MinimumEscrowAmount;
+	type MaximumEscrowAmount = MaximumEscrowAmount;
+	type MinimumDeadline = MinimumDeadline;
+	type MaximumDeadline = MaximumDeadline;
+	type MaxDescriptionLength = MaxDescriptionLength;
+	type MaxActiveEscrowsPerUser = MaxActiveEscrowsPerUser;
+	type PlatformFeePercent = PlatformFeePercent;
+	type WeightInfo = pallet_escrow::weights::SubstrateWeight<Runtime>;
 }

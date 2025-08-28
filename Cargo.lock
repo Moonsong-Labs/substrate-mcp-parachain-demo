@@ -8723,6 +8723,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-escrow"
+version = "0.1.0"
+dependencies = [
+ "parity-scale-codec",
+ "polkadot-sdk 2503.0.1",
+ "polkadot-sdk-frame",
+ "scale-info",
+]
+
+[[package]]
 name = "pallet-fast-unstake"
 version = "39.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10014,6 +10024,7 @@ dependencies = [
  "docify",
  "hex-literal",
  "log",
+ "pallet-escrow",
  "pallet-parachain-template",
  "parity-scale-codec",
  "polkadot-sdk 2503.0.1",
